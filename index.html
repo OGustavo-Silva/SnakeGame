@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jogo da cobrinha</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id = "box">
+    <text>Pontos: <text id = "score">0</text></text><br>
+  </div>
+ 
+    <canvas id="stage" width="600" height="600"></canvas>
+    <script type="text/javascript">
+        
+        window.onload = function(){
+ 
+            var stage = document.getElementById('stage');
+            var ctx = stage.getContext("2d");
+            document.addEventListener("keydown", keyPush);
+            setInterval(game, 80);
+
+            var score = 0;
+ 
+            const vel = 1;
+ 
+            var speedX = speedY = 0;
+            var posX = posY = 10;
+            var tileSize = 30;
+            var tileQnt = 20;
+            var foodPosX=foodPosY=15;
+ 
+            var trail = [];
+            tail = 5;
+ 
+            function game(){
+                posX += speedX;
+                posY += speedY;
+                // If snake cross left screen border
+                if (posX <0) {
+                    posX = tileQnt-1;
+                }
+                // If snake cross right screen border
+                if (posX > tileQnt-1) {
+                    posX = 0;
+                }
+                // If snake cross top screen border
+                if (posY < 0) {
+                    posY = tileQnt-1;
+                }
+                // If snake cross bottom screen border
+                if (posY > tileQnt-1) {
+                    posY = 0;
+                }
+ 
+                ctx.fillStyle = "black";
+                ctx.fillRect(0,0, stage.width, stage.height);
+
+                // defining the food
+                ctx.fillStyle = "red";
+                ctx.fillRect(foodPosX*tileSize, foodPosY*tileSize, tileSize,tileSize);
+                
+                //defining the snake
+                ctx.fillStyle = "green";
+                for (var i = 0; i < trail.length; i++) {
+                    ctx.fillRect(trail[i].x*tileSize, trail[i].y*tileSize, tileSize,tileSize);
+                    // If snake hits its tail
+                    if (trail[i].x == posX && trail[i].y == posY)
+                    {
+                        speedX = speedY=0;
+                        tail =5;
+                        score = 0;
+                        document.getElementById("score").innerHTML=score;
+                        
+                    }
+                    
+                }
+
+                trail.push({x:posX,y:posY })
+                while (trail.length > tail) {
+                    trail.shift();
+                }
+
+                //When eat food
+                if (foodPosX==posX && foodPosY==posY){
+                    tail++;
+                    foodPosX = Math.floor(Math.random()*tileQnt);
+                    foodPosY = Math.floor(Math.random()*tileQnt);
+
+                    document.getElementById("score").innerHTML=++score;
+                }
+ 
+            }
+ 
+            function keyPush(event){
+ 
+                switch (event.keyCode) {
+                    case 37: // Left
+                        speedX = -vel;
+                        speedY = 0;
+                        break;
+                    case 38: // up
+                        speedX = 0;
+                        speedY = -vel;
+                        break;
+                    case 39: // right
+                        speedX = vel;
+                        speedY = 0;
+                        break;
+                    case 40: // down
+                        speedX = 0;
+                        speedY = vel;
+                        break;          
+                    default:
+                        
+                        break;
+                }
+ 
+ 
+            }
+ 
+        }
+ 
+    </script>
+</body>
+</html>
